@@ -21,8 +21,6 @@ int main()
 
   #ifdef USE_CLUSTER
   if (rt_cluster_id() != 0){
-    *(int*)(0x1a107008) = 0x00000000;
-    *(int*)(0x1a107004) = 0x10001002;
     return bench_cluster_forward(0);
   }
   #endif
