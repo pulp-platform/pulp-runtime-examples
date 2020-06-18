@@ -18,18 +18,19 @@ L1_DATA float matC[SIZE*SIZE] __attribute__ ((aligned (4)));
 
 int main()
 {
-
-  #ifdef USE_CLUSTER
+  
+#ifdef USE_CLUSTER
   if (rt_cluster_id() != 0){
     return bench_cluster_forward(0);
   }
-  #endif
-
+#endif
+  
   int32_t *A = matA;
   int32_t *B = matB;
   int32_t *C = matC;
   uint32_t M = SIZE;
   uint32_t N = SIZE;
+  
   if(get_core_id() == 0) {
     
     for (int i = 0; i < SIZE; i++) {
@@ -39,36 +40,33 @@ int main()
         C[i*SIZE+j] = 0;
       }
     }
-
-    *(int*)(REG_CORESTATUS) = 0xABBAABBA;
+    
   }
-
-synch_barrier();
-
-#ifdef PARALLEL
+  
   int blockSize = (SIZE+NUM_CORES-1) / NUM_CORES;
   int start = get_core_id()*blockSize;
-  for (int i=start; i < start+blockSize; i++) {
-#else
-  if(get_core_id() == 0) {
-    for (int i = 0; i < N; i++) {
-#endif
-    for (int j = 0; j < M; j++) {
-      C[i*N+j] = 0;
-      for (int k = 0; k < N; k+=1) {
-        C[i*N+j] += A[i*N+k] * B[k*N+j];
+  
+  for (int i =0; i<2; i++) {
+    
+    if (get_core_id() == 0 && i == 1)
+      *(int*)(REG_CORESTATUS) = 0xABBAABBA;
+    synch_barrier();
+    
+    for (int i=start; i < start+blockSize; i++) {
+      for (int j = 0; j < M; j++) {
+	C[i*N+j] = 0;
+	for (int k = 0; k < N; k+=1) {
+	  C[i*N+j] += A[i*N+k] * B[k*N+j];
+	}
       }
     }
-  }
-#ifdef PARALLEL
+      
     synch_barrier();
-    if(get_core_id() == 0) {
-       *(int*)(REG_CORESTATUS) = 0xDEADCACA;  
+    if(get_core_id() == 0 && i == 1) {
+      *(int*)(REG_CORESTATUS) = 0xDEADCACA;  
+    }
+    
   }
-#else
-   *(int*)(REG_CORESTATUS) = 0xDEADCACA;
-  }
-#endif
-  
+
   return 0;
 }
