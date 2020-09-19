@@ -1,5 +1,7 @@
 cluster/test_power/matmul_32b_int/build
 cluster/test_power/matmul_8b_int/build
+cluster/test_power/matmul_8b_int_mlv1/build
+cluster/test_power/matmul_8b_int_mlv3/build
 cluster/test_power/matmul_4b_int/build
 cluster/test_power/matmul_2b_int/build
 .*
