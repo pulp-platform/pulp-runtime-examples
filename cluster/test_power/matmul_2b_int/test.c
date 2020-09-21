@@ -7,7 +7,8 @@ typedef signed   char  v4s __attribute__((vector_size (4)));
 typedef unsigned char  v4u __attribute__((vector_size (4)));
 #define SumDotp2(a, b, c) __builtin_pulp_sdotusp16(a, b, c)
 
-
+#pragma GCC push_options
+#pragma GCC optimize ("-fno-tree-loop-optimize")
 static int cluster_entry()
 {
   int32_t * ptr1_2_su   = &X2_su[0];
@@ -42,7 +43,7 @@ static int cluster_entry()
   }
   synch_barrier();
   
-  for (int i=0 ; i< (IFM_CH * DIM_KER * DIM_KER) >> 4; i++ ) {
+  for (int i=0 ; i< (IFM_CH_NN * DIM_KER * DIM_KER) >> 4; i++ ) {
 
     vecA = *((int32_t*) pW1_2_su);
     vecA2 = *((int32_t*)pW2_2_su);
@@ -94,7 +95,7 @@ static int cluster_entry()
   return 1;
   
 }
-
+#pragma GCC pop_options
 int main()
 {
   
