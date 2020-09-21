@@ -7,7 +7,8 @@ typedef signed   char  v4s __attribute__((vector_size (4)));
 typedef unsigned char  v4u __attribute__((vector_size (4)));
 #define SumDotp4(a, b, c) __builtin_pulp_sdotusp4(a, b, c)
 
-
+#pragma GCC push_options
+#pragma GCC optimize ("-fno-tree-loop-optimize")
 static int cluster_entry()
 {
   uint32_t * ptr1_8_su   = &X8_su[0];
@@ -94,7 +95,7 @@ static int cluster_entry()
   return 1;
   
 }
-
+#pragma GCC pop_options
 int main()
 {
   
