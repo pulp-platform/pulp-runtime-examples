@@ -39,7 +39,12 @@
 
 
 
-	L1_DATA uint8_t W8_su[(IFM_CH * DIM_KER * DIM_KER * OFM_CH)] = WEIGHTS_8_SU;
-	L1_DATA int8_t X8_su[(OUT_PIX * IFM_CH * DIM_KER  * DIM_KER)] = IFM_8_SU;
-	L1_DATA int32_t Y8_su[(OFM_CH * OUT_PIX)] = {0};
-	L1_DATA int32_t O8_su[(OFM_CH * OUT_PIX)] = OFM_8_SU; // Golden model
+	// L1_DATA uint8_t W8_su[(IFM_CH * DIM_KER * DIM_KER * OFM_CH)] = WEIGHTS_8_SU;
+	// L1_DATA int8_t X8_su[(OUT_PIX * IFM_CH * DIM_KER  * DIM_KER)] = IFM_8_SU;
+	// L1_DATA int32_t Y8_su[(OFM_CH * OUT_PIX)] = {0};
+	// L1_DATA int32_t O8_su[(OFM_CH * OUT_PIX)] = OFM_8_SU; // Golden model
+
+	L1_DATA uint8_t filters_3d[(IFM_CH_NN * DIM_KER_NN * DIM_KER_NN * OFM_CH_NN)] = WEIGHTS_PULPNN_K;
+	L1_DATA int8_t buffer_im2col[(OUT_PIX_NN * IFM_CH_NN * DIM_KER_NN  * DIM_KER_NN)] = IFM_PULPNN_K;
+	L1_DATA int32_t matmul_out[(OFM_CH_NN * OUT_PIX_NN)] = {0};
+	L1_DATA int32_t golden_matmul_out[(OFM_CH_NN * OUT_PIX_NN)] = OFM_PULPNN_K; // Golden model

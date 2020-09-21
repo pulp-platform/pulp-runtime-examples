@@ -41,7 +41,7 @@ static int cluster_entry()
   int32_t sum7 = 0;
   int32_t sum8 = 0;
 
-  synch_barrier();
+  // synch_barrier();
     if(get_core_id() == 0) {
        *(int*)(REG_CORESTATUS) = 0xABBAABBA;
   }
@@ -54,28 +54,28 @@ static int cluster_entry()
     //printf("ptrB: %d, pinbuffer: %d , ptrA: %d, sum:%d\n ", *ptrB, *pInBuffer, *ptrA, sum);
     /* Compute SPRA[0] * SPRW[1] + sum2 */
     sum2 = __builtin_pulp_mlsdotsup4_v3(0,0, 1, 0, ptrA2, sum2);
-    /* Compute SPRA[0] * SPRW[2] + sum3 */
-    sum3 = __builtin_pulp_mlsdotsup4_v3(0,0, 2, 0, ptrA3, sum3);
-    /* Compute SPRA[0] * SPRW[3] + sum4 */
-    /* update SPRA[1] with new im2col1 element (ptrB) */
-    sum4 = __builtin_pulp_mlsdotsup4_v3(0,1, 3, 0, ptrB, sum4);
-    ptrB = __builtin_pulp_mlupdatespr_v3(ptrB);
-    /* Compute SPRA[1] * SPRW[0] + sum5*/
-    /* update SPRW[0] with new ptrA element (weights) */
-    sum5 = __builtin_pulp_mlsdotsup4_v3(1,0, 0, 1, ptrA, sum5);
-    ptrA = __builtin_pulp_mlupdatespr_v3(ptrA);
-    /* Compute SPRA[1] * SPRW[1] + sum6 */
-    /* update SPRW[1] with new filter_2 element (weights) */
-    sum6 = __builtin_pulp_mlsdotsup4_v3(1,0, 1, 1, ptrA2, sum6);
-    ptrA2 = __builtin_pulp_mlupdatespr_v3(ptrA2);
-    /* Compute SPRA[1] * SPRW[2] + sum7 */
-    /* update SPRW[2] with new filter_3 element (weights) */
-    sum7 = __builtin_pulp_mlsdotsup4_v3(1,0, 2, 1, ptrA3, sum7);
-    ptrA3 = __builtin_pulp_mlupdatespr_v3(ptrA3);
-    /* Compute SPRA[1] * SPRW[3] + sum8 */
-    /* update SPRW[3] with new filter_4 element (weights) */
-    sum8 = __builtin_pulp_mlsdotsup4_v3(1,0, 3, 1, ptrA4, sum8);
-    ptrA4 = __builtin_pulp_mlupdatespr_v3(ptrA4);
+    // /* Compute SPRA[0] * SPRW[2] + sum3 */
+     sum3 = __builtin_pulp_mlsdotsup4_v3(0,0, 2, 0, ptrA3, sum3);
+    // /* Compute SPRA[0] * SPRW[3] + sum4 */
+    // /* update SPRA[1] with new im2col1 element (ptrB) */
+     sum4 = __builtin_pulp_mlsdotsup4_v3(0,1, 3, 0, ptrB, sum4);
+     ptrB = __builtin_pulp_mlupdatespr_v3(ptrB);
+    // /* Compute SPRA[1] * SPRW[0] + sum5*/
+    // /* update SPRW[0] with new ptrA element (weights) */
+     sum5 = __builtin_pulp_mlsdotsup4_v3(1,0, 0, 1, ptrA, sum5);
+     ptrA = __builtin_pulp_mlupdatespr_v3(ptrA);
+    //  Compute SPRA[1] * SPRW[1] + sum6 
+    // /* update SPRW[1] with new filter_2 element (weights) */
+     sum6 = __builtin_pulp_mlsdotsup4_v3(1,0, 1, 1, ptrA2, sum6);
+     ptrA2 = __builtin_pulp_mlupdatespr_v3(ptrA2);
+    // /* Compute SPRA[1] * SPRW[2] + sum7 */
+    // /* update SPRW[2] with new filter_3 element (weights) */
+     sum7 = __builtin_pulp_mlsdotsup4_v3(1,0, 2, 1, ptrA3, sum7);
+     ptrA3 = __builtin_pulp_mlupdatespr_v3(ptrA3);
+    // /* Compute SPRA[1] * SPRW[3] + sum8 */
+    // /* update SPRW[3] with new filter_4 element (weights) */
+     sum8 = __builtin_pulp_mlsdotsup4_v3(1,0, 3, 1, ptrA4, sum8);
+     ptrA4 = __builtin_pulp_mlupdatespr_v3(ptrA4);
 
   }
   
@@ -94,7 +94,7 @@ static int cluster_entry()
     res_8_su[7] = sum8;
 
   
-  synch_barrier();
+    //synch_barrier();
   
   return 1;
   
