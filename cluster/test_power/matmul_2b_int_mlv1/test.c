@@ -12,24 +12,24 @@ typedef unsigned char  v4u __attribute__((vector_size (4)));
 static int cluster_entry()
 {
   uint32_t * ptr1_2_su   = &X2_su[0];
-  uint32_t * ptr2_2_su   = &X2_su[0 + IFM_CH * DIM_KER * DIM_KER];
+  uint32_t * ptr2_2_su   = &X2_su[0 + IFM_CH_NN * DIM_KER * DIM_KER];
   int32_t *   pW1_2_su   = &W2_su[0];
-  int32_t *   pW2_2_su   = &W2_su[0 + IFM_CH * DIM_KER * DIM_KER];
-  int32_t *   pW3_2_su   = &W2_su[0 + 2 *IFM_CH * DIM_KER * DIM_KER];
-  int32_t *   pW4_2_su   = &W2_su[0 + 3 *IFM_CH * DIM_KER * DIM_KER];
+  int32_t *   pW2_2_su   = &W2_su[0 + IFM_CH_NN * DIM_KER * DIM_KER];
+  int32_t *   pW3_2_su   = &W2_su[0 + 2 *IFM_CH_NN * DIM_KER * DIM_KER];
+  int32_t *   pW4_2_su   = &W2_su[0 + 3 *IFM_CH_NN * DIM_KER * DIM_KER];
   int32_t *  gold_2_su   = &O2_su[0];
   int32_t *   res_2_su   = &Y2_su[0];
 
   int32_t *  ptrA      = pW1_2_su;
-  int32_t *  ptrA2     = ( ptrA + ((IFM_CH * DIM_KER * DIM_KER) >> 3)); 
-  int32_t *  ptrA3     = ( ptrA2 + ((IFM_CH * DIM_KER * DIM_KER) >> 3)); 
-  int32_t *  ptrA4     = ( ptrA3 + ((IFM_CH * DIM_KER * DIM_KER) >> 3)); 
+  int32_t *  ptrA2     = ( ptrA + ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4)); 
+  int32_t *  ptrA3     = ( ptrA2 + ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4)); 
+  int32_t *  ptrA4     = ( ptrA3 + ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4)); 
   int32_t *  ptrA_2    = pW1_2_su;
-  int32_t *  ptrA2_2   = ( ptrA_2 +  ((IFM_CH * DIM_KER * DIM_KER) >> 3)); 
-  int32_t *  ptrA3_2   = ( ptrA2_2 +  ((IFM_CH * DIM_KER * DIM_KER) >> 3)); 
-  int32_t *  ptrA4_2   = ( ptrA3_2 +  ((IFM_CH * DIM_KER * DIM_KER) >> 3));
+  int32_t *  ptrA2_2   = ( ptrA_2 +  ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4)); 
+  int32_t *  ptrA3_2   = ( ptrA2_2 +  ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4)); 
+  int32_t *  ptrA4_2   = ( ptrA3_2 +  ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4));
   int32_t *ptrB        = ptr1_2_su; //((int32_t*) pB);
-  int32_t *ptrB2       = ptrB + ((IFM_CH * DIM_KER * DIM_KER) >> 3); //((int32_t*) pB2);  
+  int32_t *ptrB2       = ptrB + ((IFM_CH_NN * DIM_KER * DIM_KER) >> 4); //((int32_t*) pB2);  
 
   ptrA    = __builtin_pulp_mlinitspr(ptrA, 0);
   ptrA2   = __builtin_pulp_mlinitspr(ptrA2, 1);
@@ -51,26 +51,26 @@ static int cluster_entry()
   }
   synch_barrier();
   
-  for (int i=0 ; i< (IFM_CH * DIM_KER * DIM_KER) >> 4; i++ ) {
+  for (int i=0 ; i< (IFM_CH_NN * DIM_KER * DIM_KER) >> 4; i++ ) {
     int act1 = *((int *)ptrB);
     int act2 = *((int *)ptrB2);
     ptrB++;
     ptrB2++;
-    sum = __builtin_pulp_mlsdotsup4(ptrA3, act1, sum, 0);
+    sum = __builtin_pulp_mlsdotsup16(ptrA3, act1, sum, 0);
     ptrA3 = __builtin_pulp_mlupdatespr();
-    sum2 = __builtin_pulp_mlsdotsup4(ptrA4, act1, sum2, 1);
+    sum2 = __builtin_pulp_mlsdotsup16(ptrA4, act1, sum2, 1);
     ptrA4 = __builtin_pulp_mlupdatespr();
-    sum3 = __builtin_pulp_mlsdotsup4(ptrA, act1, sum3, 0);
+    sum3 = __builtin_pulp_mlsdotsup16(ptrA, act1, sum3, 0);
     ptrA = __builtin_pulp_mlupdatespr();
-    sum4 = __builtin_pulp_mlsdotsup4(ptrA2, act1, sum4, 1);
+    sum4 = __builtin_pulp_mlsdotsup16(ptrA2, act1, sum4, 1);
     ptrA2 = __builtin_pulp_mlupdatespr();
-    sum5 = __builtin_pulp_mlsdotsup4((ptrA3_2), act2, sum5, 2);
+    sum5 = __builtin_pulp_mlsdotsup16((ptrA3_2), act2, sum5, 2);
     ptrA3_2 = __builtin_pulp_mlupdatespr();
-    sum6 = __builtin_pulp_mlsdotsup4((ptrA4_2), act2, sum6, 3);
+    sum6 = __builtin_pulp_mlsdotsup16((ptrA4_2), act2, sum6, 3);
     ptrA4_2 = __builtin_pulp_mlupdatespr();
-    sum7 = __builtin_pulp_mlsdotsup4((ptrA_2), act2, sum7, 2);
+    sum7 = __builtin_pulp_mlsdotsup16((ptrA_2), act2, sum7, 2);
     ptrA_2 = __builtin_pulp_mlupdatespr();
-    sum8 = __builtin_pulp_mlsdotsup4((ptrA2_2), act2, sum8, 3);
+    sum8 = __builtin_pulp_mlsdotsup16((ptrA2_2), act2, sum8, 3);
     ptrA2_2 = __builtin_pulp_mlupdatespr();
 
   }
@@ -80,14 +80,14 @@ static int cluster_entry()
        *(int*)(REG_CORESTATUS) = 0xDEADCACA;  
   }
 
-    res_4_su[0] = sum;
-    res_4_su[1] = sum2;
-    res_4_su[2] = sum3;
-    res_4_su[3] = sum4;
-    res_4_su[4] = sum5;
-    res_4_su[5] = sum6;
-    res_4_su[6] = sum7;
-    res_4_su[7] = sum8;
+    res_2_su[0] = sum;
+    res_2_su[1] = sum2;
+    res_2_su[2] = sum3;
+    res_2_su[3] = sum4;
+    res_2_su[4] = sum5;
+    res_2_su[5] = sum6;
+    res_2_su[6] = sum7;
+    res_2_su[7] = sum8;
 
   
   synch_barrier();
